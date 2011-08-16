@@ -6,9 +6,13 @@ A standalone version of the WebKit server in [capybara-webkit](https://github.co
 
 webkit-server depends on a WebKit implementation from Qt, a cross-platform development toolkit. You'll need to download the Qt libraries to build the binary.
 
-**OS X:**
+**OS X 10.7:**
 
-[Download the non-debug Cocoa package](http://qt.nokia.com/downloads/qt-for-open-source-cpp-development-on-mac-os-x). Note that installing Qt via homebrew takes more than an hour, so it is not recommended.
+    brew install qt
+
+**OS X < 10.7:**
+
+[Download the non-debug Cocoa package](http://qt.nokia.com/downloads/qt-for-open-source-cpp-development-on-mac-os-x).
 
 **Ubuntu:**
 
