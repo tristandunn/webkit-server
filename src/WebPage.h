@@ -33,5 +33,7 @@ class WebPage : public QWebPage {
     QString m_userAgent;
     bool m_loading;
     QString getLastAttachedFileName();
+    void loadJavascript();
+    void setUserStylesheet();
 };
 

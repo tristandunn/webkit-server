@@ -5,6 +5,20 @@
 #include <iostream>
 
 WebPage::WebPage(QObject *parent) : QWebPage(parent) {
+  loadJavascript();
+  setUserStylesheet();
+
+  m_loading = false;
+
+  this->setNetworkAccessManager(new NetworkAccessManager());
+
+  connect(this, SIGNAL(loadStarted()), this, SLOT(loadStarted()));
+  connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
+  connect(this, SIGNAL(frameCreated(QWebFrame *)),
+          this, SLOT(frameCreated(QWebFrame *)));
+}
+
+void WebPage::loadJavascript() {
   QResource javascript(":/capybara.js");
   if (javascript.isCompressed()) {
     QByteArray uncompressedBytes(qUncompress(javascript.data(), javascript.size()));
@@ -15,14 +29,12 @@ WebPage::WebPage(QObject *parent) : QWebPage(parent) {
     javascriptString[javascript.size()] = 0;
     m_capybaraJavascript = javascriptString;
   }
-  m_loading = false;
+}
 
-  this->setNetworkAccessManager(new NetworkAccessManager());
-
-  connect(this, SIGNAL(loadStarted()), this, SLOT(loadStarted()));
-  connect(this, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
-  connect(this, SIGNAL(frameCreated(QWebFrame *)),
-          this, SLOT(frameCreated(QWebFrame *)));
+void WebPage::setUserStylesheet() {
+  QString data = QString("* { font-family: 'Arial' ! important; }").toUtf8().toBase64();
+  QUrl url = QUrl(QString("data:text/css;charset=utf-8;base64,") + data);
+  settings()->setUserStyleSheetUrl(url);
 }
 
 QString WebPage::userAgentForUrl(const QUrl &url ) const {
