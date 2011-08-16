@@ -22,6 +22,10 @@ webkit-server depends on a WebKit implementation from Qt, a cross-platform devel
 
     yum install qt-webkit-devel
 
+**Gentoo Linux:**
+
+    emerge x11-libs/qt-webkit
+
 **Other Linux distributions:**
 
 [Download this package](http://qt.nokia.com/downloads/linux-x11-cpp).
