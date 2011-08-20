@@ -29,6 +29,8 @@ else
   exit 3
 fi
 
+cd `dirname $0`
+
 $QMAKE_BINARY -spec $SPEC
 $MAKE_BINARY qmake
 $MAKE_BINARY
