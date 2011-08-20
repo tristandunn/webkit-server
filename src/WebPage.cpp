@@ -155,6 +155,8 @@ QString WebPage::chooseFile(QWebFrame *parentFrame, const QString &suggestedFile
 }
 
 bool WebPage::extension(Extension extension, const ExtensionOption *option, ExtensionReturn *output) {
+  Q_UNUSED(option);
+
   if (extension == ChooseMultipleFilesExtension) {
     QStringList names = QStringList() << getLastAttachedFileName();
     static_cast<ChooseMultipleFilesExtensionReturn*>(output)->fileNames = names;
