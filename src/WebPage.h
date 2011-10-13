@@ -11,6 +11,8 @@ class WebPage : public QWebPage {
     QString userAgentForUrl(const QUrl &url ) const;
     void setUserAgent(QString userAgent);
     int getLastStatus();
+    void resetResponseHeaders();
+    void setCustomNetworkAccessManager();
     bool render(const QString &fileName);
     virtual bool extension (Extension extension, const ExtensionOption *option=0, ExtensionReturn *output=0);
 
@@ -23,6 +25,10 @@ class WebPage : public QWebPage {
     QString pageHeaders();
     void frameCreated(QWebFrame *);
     void replyFinished(QNetworkReply *reply);
+    void handleUnsupportedContent(QNetworkReply *reply);
+
+  signals:
+    void pageFinished(bool);
 
   protected:
     virtual void javaScriptConsoleMessage(const QString &message, int lineNumber, const QString &sourceID);
@@ -38,7 +44,7 @@ class WebPage : public QWebPage {
     QString getLastAttachedFileName();
     void loadJavascript();
     void setUserStylesheet();
-    int lastStatus;
+    int m_lastStatus;
     QString m_pageHeaders;
 };
 

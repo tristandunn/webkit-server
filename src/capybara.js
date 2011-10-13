@@ -27,6 +27,10 @@ Capybara = {
     return results.join(",");
   },
 
+  isAttached: function(index) {
+    return document.evaluate("ancestor-or-self::html", this.nodes[index], null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue != null;
+  },
+
   text: function (index) {
     var node = this.nodes[index];
     var type = (node.type || node.tagName).toLowerCase();
@@ -105,7 +109,14 @@ Capybara = {
     if (type == "text" || type == "textarea" || type == "password") {
       this.trigger(index, "focus");
       node.value = "";
-      var length = this.attribute(index, "maxlength") || value.length;
+      var maxLength = this.attribute(index, "maxlength"),
+          length;
+      if (maxLength && value.length > maxLength) {
+        length = maxLength;
+      } else {
+        length = value.length;
+      }
+
       for(var strindex = 0; strindex < length; strindex++) {
         node.value += value[strindex];
         this.trigger(index, "keydown");
