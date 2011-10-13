@@ -36,4 +36,4 @@ $MAKE_BINARY qmake
 $MAKE_BINARY
 
 mkdir -p bin
-cp src/webkit_server bin/
+mv src/webkit_server bin/
