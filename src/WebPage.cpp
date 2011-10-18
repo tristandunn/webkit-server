@@ -27,18 +27,19 @@ void WebPage::setCustomNetworkAccessManager() {
   manager->setCookieJar(new NetworkCookieJar());
   this->setNetworkAccessManager(manager);
   connect(manager, SIGNAL(finished(QNetworkReply *)), this, SLOT(replyFinished(QNetworkReply *)));
+  connect(manager, SIGNAL(sslErrors(QNetworkReply *, QList<QSslError>)), this, SLOT(ignoreSslErrors(QNetworkReply *, QList<QSslError>)));
 }
 
 void WebPage::loadJavascript() {
-  QResource javascript(":/capybara.js");
+  QResource javascript(":/webkit_server.js");
   if (javascript.isCompressed()) {
     QByteArray uncompressedBytes(qUncompress(javascript.data(), javascript.size()));
-    m_capybaraJavascript = QString(uncompressedBytes);
+    m_javascriptString = QString(uncompressedBytes);
   } else {
     char * javascriptString =  new char[javascript.size() + 1];
     strcpy(javascriptString, (const char *)javascript.data());
     javascriptString[javascript.size()] = 0;
-    m_capybaraJavascript = javascriptString;
+    m_javascriptString = javascriptString;
   }
 }
 
@@ -67,24 +68,24 @@ void WebPage::frameCreated(QWebFrame * frame) {
 
 void WebPage::injectJavascriptHelpers() {
   QWebFrame* frame = qobject_cast<QWebFrame *>(QObject::sender());
-  frame->evaluateJavaScript(m_capybaraJavascript);
+  frame->evaluateJavaScript(m_javascriptString);
 }
 
 bool WebPage::shouldInterruptJavaScript() {
   return false;
 }
 
-QVariant WebPage::invokeCapybaraFunction(const char *name, QStringList &arguments) {
+QVariant WebPage::invokeWebKitServerFunction(const char *name, QStringList &arguments) {
   QString qname(name);
-  QString objectName("CapybaraInvocation");
+  QString objectName("WebKitServerInvocation");
   JavascriptInvocation invocation(qname, arguments);
   currentFrame()->addToJavaScriptWindowObject(objectName, &invocation);
-  QString javascript = QString("Capybara.invoke()");
+  QString javascript = QString("WebKitServer.invoke()");
   return currentFrame()->evaluateJavaScript(javascript);
 }
 
-QVariant WebPage::invokeCapybaraFunction(QString &name, QStringList &arguments) {
-  return invokeCapybaraFunction(name.toAscii().data(), arguments);
+QVariant WebPage::invokeWebKitServerFunction(QString &name, QStringList &arguments) {
+  return invokeWebKitServerFunction(name.toAscii().data(), arguments);
 }
 
 void WebPage::javaScriptConsoleMessage(const QString &message, int lineNumber, const QString &sourceID) {
@@ -174,7 +175,7 @@ bool WebPage::extension(Extension extension, const ExtensionOption *option, Exte
 }
 
 QString WebPage::getLastAttachedFileName() {
-  return currentFrame()->evaluateJavaScript(QString("Capybara.lastAttachedFile")).toString();
+  return currentFrame()->evaluateJavaScript(QString("WebKitServer.lastAttachedFile")).toString();
 }
 
 void WebPage::replyFinished(QNetworkReply *reply) {
@@ -191,6 +192,20 @@ void WebPage::replyFinished(QNetworkReply *reply) {
     m_pageHeaders = headers.join("\n");
   }
 }
+
+void WebPage::ignoreSslErrors(QNetworkReply *reply, const QList<QSslError> &errors) {
+  if (m_ignoreSslErrors)
+    reply->ignoreSslErrors(errors);
+}
+
+void WebPage::setIgnoreSslErrors(bool ignore) {
+  m_ignoreSslErrors = ignore;
+}
+
+bool WebPage::ignoreSslErrors() {
+  return m_ignoreSslErrors;
+}
+
 
 int WebPage::getLastStatus() {
   return m_lastStatus;

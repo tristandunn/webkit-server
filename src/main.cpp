@@ -14,17 +14,18 @@ int main(int argc, char **argv) {
 #endif
 
   QApplication app(argc, argv);
-  app.setApplicationName("capybara-webkit");
-  app.setOrganizationName("thoughtbot, inc");
-  app.setOrganizationDomain("thoughtbot.com");
+  app.setApplicationName("webkit_server");
 
-  Server server;
+  QStringList args = app.arguments();
+  bool ignoreSslErrors = args.contains("--ignore-ssl-errors");
+
+  Server server(0, ignoreSslErrors);
 
   if (server.start()) {
-    std::cout << "Capybara-webkit server started, listening on port: " << server.server_port() << std::endl;
+    std::cout << "webkit_server server started, listening on port: " << server.server_port() << std::endl;
     return app.exec();
   } else {
-    std::cerr << "Couldn't start capybara-webkit server" << std::endl;
+    std::cerr << "Couldn't start webkit_server." << std::endl;
     return 1;
   }
 }

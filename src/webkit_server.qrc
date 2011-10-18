@@ -1,5 +1,5 @@
 <RCC>
   <qresource prefix="/">
-    <file>capybara.js</file>
+    <file>webkit_server.js</file>
   </qresource>
 </RCC>

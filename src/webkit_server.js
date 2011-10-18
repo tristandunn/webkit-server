@@ -1,10 +1,10 @@
-Capybara = {
+window.WebKitServer = {
   nextIndex: 0,
   nodes: {},
   lastAttachedFile: "",
 
   invoke: function () {
-    return this[CapybaraInvocation.functionName].apply(this, CapybaraInvocation.arguments);
+    return this[WebKitServerInvocation.functionName].apply(this, WebKitServerInvocation.arguments);
   },
 
   find: function (xpath) {
