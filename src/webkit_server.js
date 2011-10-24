@@ -1,29 +1,28 @@
 window.WebKitServer = {
-  nextIndex: 0,
-  nodes: {},
-  lastAttachedFile: "",
+  nodes            : {},
+  nextIndex        : 0,
+  lastAttachedFile : "",
 
   invoke: function() {
     return this[WebKitServerInvocation.functionName].apply(this, WebKitServerInvocation.arguments);
   },
 
-  find: function(xpath) {
-    return this.findRelativeTo(document, xpath);
+  find: function(selector) {
+    return this.findRelativeTo(document, selector);
   },
 
-  findWithin: function(index, xpath) {
-    return this.findRelativeTo(this.nodes[index], xpath);
+  findWithin: function(index, selector) {
+    return this.findRelativeTo(this.nodes[index], selector);
   },
 
-  findRelativeTo: function(reference, xpath) {
-    var iterator = document.evaluate(xpath, reference, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
-    var node;
-    var results = [];
-    while (node = iterator.iterateNext()) {
-      this.nextIndex++;
-      this.nodes[this.nextIndex] = node;
-      results.push(this.nextIndex);
+  findRelativeTo: function(parent, selector) {
+    var results  = [],
+        elements = parent.querySelectorAll(selector);
+
+    for (var index = 0, length = elements.length; index < length; index++) {
+      this.nodes[results.push(this.nextIndex++)] = elements[index];
     }
+
     return results.join(",");
   },
 
@@ -202,4 +201,3 @@ window.WebKitServer = {
     mouseTrigger('mouseup', options);
   }
 };
-
