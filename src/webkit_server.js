@@ -20,7 +20,7 @@ window.WebKitServer = {
         elements = parent.querySelectorAll(selector);
 
     for (var index = 0, length = elements.length; index < length; index++) {
-      this.nodes[results.push(this.nextIndex++)] = elements[index];
+      this.nodes[results.push(++this.nextIndex)] = elements[index];
     }
 
     return results.join(",");
