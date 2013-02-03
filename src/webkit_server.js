@@ -251,7 +251,7 @@ window.WebKitServer = {
     this.trigger(index, "change");
   },
 
-  centerPostion: function(element) {
+  centerPosition: function(element) {
     this.reflow(element);
 
     var rect     = element.getBoundingClientRect(),
@@ -298,7 +298,7 @@ window.WebKitServer = {
   dragTo: function(index, targetIndex) {
     var element  = this.nodes[index],
         target   = this.nodes[targetIndex],
-        position = this.centerPostion(element),
+        position = this.centerPosition(element),
         options  = {
           clientX: position.x,
           clientY: position.y
@@ -316,7 +316,7 @@ window.WebKitServer = {
 
     mouseTrigger("mousemove", options);
 
-    position = this.centerPostion(target);
+    position = this.centerPosition(target);
     options  = {
       clientX: position.x,
       clientY: position.y
